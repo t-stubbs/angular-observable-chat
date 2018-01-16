@@ -20,7 +20,7 @@ export class MessagesService {
   updates: Subject<any> = new Subject<any>();
   // action streams
   create: Subject<Message> = new Subject<Message>();
-
+  markThreadAsRead: Subject<any> = new Subject<any>();
   constructor() {
     this.messages = this.updates
       .scan((messages: Message[],
@@ -42,6 +42,19 @@ export class MessagesService {
 
     this.newMessages
       .subscribe(this.create);
+
+    this.markThreadAsRead
+      .map((thread: Thread) => {
+        return (messages: Message[]) => {
+          return messages.map((message: Message) => {
+            if (message.thread.id === thread.id) {
+              message.isRead = true;
+            }
+            return message;
+          });
+        };
+      })
+      .subscribe(this.updates);
   }
 
   public addMessage(message: Message): void {
