@@ -1,26 +1,24 @@
-import {Message} from './message.model';
-import {Subject} from 'rxjs/Subject';
+import {Injectable} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
 import {User} from '../user/user.model';
 import {Thread} from '../thread/thread.model';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/publishReplay';
-import 'rxjs/add/operator/map';
+import {Message} from '../message/message.model';
 
 const initialMessages: Message[] = [];
 
 type IMessagesOperation = (messages: Message[]) => Message[];
 
+@Injectable()
 export class MessagesService {
   newMessages: Subject<Message> = new Subject<Message>();
   messages: Observable<Message[]>;
-  // updates receives operationsto be applied to our messages
+  // updates receives operations to be applied to our messages
   // so we can perform changes on all messages that are currently stored in messages
   updates: Subject<any> = new Subject<any>();
   // action streams
   create: Subject<Message> = new Subject<Message>();
   markThreadAsRead: Subject<any> = new Subject<any>();
+
   constructor() {
     this.messages = this.updates
       .scan((messages: Message[],

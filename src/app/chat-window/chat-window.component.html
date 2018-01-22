@@ -2,6 +2,7 @@
   <div class="chat-window">
     <div class="panel-container">
       <div class="panel panel-default">
+
         <div class="panel-heading top-bar">
           <div class="panel-title-container">
             <h3 class="panel-title">
@@ -13,26 +14,29 @@
             <!-- you could put minimize or close buttons here -->
           </div>
         </div>
+
         <div class="panel-body msg-container-base">
           <chat-message
             *ngFor="let message of messages | async"
             [message]="message">
           </chat-message>
         </div>
+
         <div class="panel-footer">
           <div class="input-group">
             <input type="text"
                    class="chat-input"
                    placeholder="Write your message here..."
                    (keydown.enter)="onEnter($event)"
-                   [(ngModel)]="draftMessage.text"/>
+                   [(ngModel)]="draftMessage.text" />
             <span class="input-group-btn">
-                  <button class="btn-chat" (click)="onEnter($event)">Send</button>
-            </span>
+            <button class="btn-chat"
+                    (click)="onEnter($event)"
+            >Send</button>
+          </span>
           </div>
         </div>
+
       </div>
     </div>
   </div>
-</div>
-

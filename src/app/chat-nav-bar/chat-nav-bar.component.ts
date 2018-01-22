@@ -1,12 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {MessagesService} from '../message/messages.service';
-import {ThreadsService} from '../thread/threads.service';
-import {Thread} from '../thread/thread.model';
-import {Message} from '../message/message.model';
 import * as _ from 'lodash';
 
+import {ThreadsService} from './../thread/threads.service';
+import {MessagesService} from './../message/messages.service';
+
+import {Thread} from './../thread/thread.model';
+import {Message} from './../message/message.model';
+import 'rxjs/add/observable/combineLatest';
+
 @Component({
-  selector: 'app-chat-nav-bar',
+  selector: 'chat-nav-bar',
   templateUrl: './chat-nav-bar.component.html',
   styleUrls: ['./chat-nav-bar.component.css']
 })
@@ -17,7 +20,7 @@ export class ChatNavBarComponent implements OnInit {
               public threadsService: ThreadsService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.messagesService.messages
       .combineLatest(
         this.threadsService.currentThread,
@@ -29,14 +32,15 @@ export class ChatNavBarComponent implements OnInit {
           _.reduce(
             messages,
             (sum: number, m: Message) => {
-              const messageIsInCurrentThread: boolean = m.thread && currentThread && (currentThread.id === m.thread.id);
+              const messageIsInCurrentThread: boolean = m.thread &&
+                currentThread &&
+                (currentThread.id === m.thread.id);
               if (m && !m.isRead && !messageIsInCurrentThread) {
-                sum++;
+                sum = sum + 1;
               }
               return sum;
             },
             0);
       });
   }
-
 }
