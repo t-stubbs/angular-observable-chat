@@ -14,12 +14,14 @@ const echo: User    = new User('Echo Bot', 'assets/images/avatars/male-avatar-1.
 const rev: User     = new User('Reverse Bot', 'assets/images/avatars/female-avatar-4.png');
 const wait: User    = new User('Waiting Bot', 'assets/images/avatars/male-avatar-2.png');
 const count: User = new User('Countalot', 'assets/images/avatars/male-avatar-1.png');
+const guess: User = new User('Guess', 'assets/images/avatars/female-avatar-1.png');
 
 const tLadycap: Thread = new Thread('tLadycap', ladycap.name, ladycap.avatarSrc);
 const tEcho: Thread    = new Thread('tEcho', echo.name, echo.avatarSrc);
 const tRev: Thread     = new Thread('tRev', rev.name, rev.avatarSrc);
 const tWait: Thread    = new Thread('tWait', wait.name, wait.avatarSrc);
 const tCount: Thread    = new Thread('tCount', count.name, count.avatarSrc);
+const tGuess: Thread    = new Thread('tGuess', guess.name, guess.avatarSrc);
 
 
 const initialMessages: Array<Message> = [
@@ -58,6 +60,12 @@ const initialMessages: Array<Message> = [
     sentAt: moment().subtract(5, 'minutes').toDate(),
     text: `I'll tell you how many characters were in the messages you send me`,
     thread: tCount
+  }),
+  new Message({
+    author: guess,
+    sentAt: moment().subtract(6, 'minutes').toDate(),
+    text: `Guess which whole number I am thinking of!`,
+    thread: tGuess
   }),
 ];
 
@@ -149,5 +157,32 @@ export class ChatExampleData {
         );
       },
       null);
+
+    const numberToGuess: number = Math.floor(Math.random() * 1000);
+    messagesService.messagesForThreadUser(tGuess, guess)
+      .forEach((message: Message): void => {
+          let userGuess: number = parseInt(message.text, 10);
+          let reply: string;
+          if (isNaN(userGuess)) {
+            reply = `I didn\'t understand ${message.text}. Try sending me a number`;
+          } else {
+            if (userGuess < numberToGuess) {
+              reply = 'Try a higher guess';
+            } else if (userGuess > numberToGuess) {
+              reply = 'Try a lower guess';
+            } else {
+              reply = 'You guessed it.';
+            }
+          }
+
+          messagesService.addMessage(
+            new Message({
+              author: guess,
+              text: reply,
+              thread: tGuess
+            })
+          );
+        },
+        null);
   }
 }
