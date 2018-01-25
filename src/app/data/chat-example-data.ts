@@ -13,11 +13,14 @@ const ladycap: User = new User('Lady Capulet', 'assets/images/avatars/female-ava
 const echo: User    = new User('Echo Bot', 'assets/images/avatars/male-avatar-1.png');
 const rev: User     = new User('Reverse Bot', 'assets/images/avatars/female-avatar-4.png');
 const wait: User    = new User('Waiting Bot', 'assets/images/avatars/male-avatar-2.png');
+const count: User = new User('Countalot', 'assets/images/avatars/male-avatar-1.png');
 
 const tLadycap: Thread = new Thread('tLadycap', ladycap.name, ladycap.avatarSrc);
 const tEcho: Thread    = new Thread('tEcho', echo.name, echo.avatarSrc);
 const tRev: Thread     = new Thread('tRev', rev.name, rev.avatarSrc);
 const tWait: Thread    = new Thread('tWait', wait.name, wait.avatarSrc);
+const tCount: Thread    = new Thread('tCount', count.name, count.avatarSrc);
+
 
 const initialMessages: Array<Message> = [
   new Message({
@@ -49,6 +52,12 @@ const initialMessages: Array<Message> = [
     sentAt: moment().subtract(4, 'minutes').toDate(),
     text: `I\'ll wait however many seconds you send to me before responding. Try sending '3'`,
     thread: tWait
+  }),
+  new Message({
+    author: count,
+    sentAt: moment().subtract(5, 'minutes').toDate(),
+    text: `I'll tell you how many characters were in the messages you send me`,
+    thread: tCount
   }),
 ];
 
@@ -128,6 +137,17 @@ export class ChatExampleData {
       },
                 null);
 
-
+    messagesService.messagesForThreadUser(tCount, count)
+      .forEach((message: Message): void => {
+        let charCount: number = message.text.length;
+        messagesService.addMessage(
+          new Message({
+            author: count,
+            text: `Your message was ${charCount} characters long`,
+            thread: tCount
+          })
+        );
+      },
+      null);
   }
 }
